@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'message.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-lg-12">
+        <ol class="breadcrumb bg-transparent float-end pt-3 mb-0 px-0">
+          <li class="breadcrumb-item text-secondary"><a href="/" class="text-decoration-none">Home</a></li>
+          <li class="breadcrumb-item active">Update Images</li>
+        </ol>
+      </div>
+      <div class="col-12">
+        <a href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"></path>
+            </svg>
+        </a>&nbsp;
+        <h2 class="d-inline-block mb-4">Update Images</h2>
+        <p>You can Update a meme and then add the captions.</p>
+      </div>
+      <div class="col-12 col-lg-6">
+        <form method="post" enctype="multipart/form-data" class="needs-validation border p-4" novalidate>
+          {% csrf_token %}
+          
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Select Image</label>
+            {{ form.image }}
+            <div class="invalid-feedback">{{ form.image.errors }}</div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Name</label>
+            {{ form.name }}
+            <div class="invalid-feedback">{{ form.name.errors }}</div>
+          </div>
+          
+          <!-- Add any additional form fields here -->
+          
+          <a href="/" class="btn btn-danger">Back</a>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

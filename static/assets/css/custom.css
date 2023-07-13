@@ -1,0 +1,58 @@
+/* custom.css */
+
+
+/* Meme Library css */
+.meme-card {
+    position: relative;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e4e4e4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .img-caption {
+    position: relative;
+    color: black;
+  }
+
+  .meme-card:hover .img-caption{
+    color: white;
+  }
+  
+  .meme-card img {
+    width: 100%;
+    height: 200px;
+    border-radius: 4px;
+  }
+  
+  .meme-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 4px;
+  }
+  
+  .meme-card:hover .meme-card-overlay {
+    opacity: 1;
+  }
+  
+  .meme-card-overlay a {
+    color: #ffffff;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+/* Generate Meme */
+
+
+

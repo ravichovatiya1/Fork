@@ -1,0 +1,432 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-lg-12">
+        <ol class="breadcrumb bg-transparent float-end pt-3 mb-0 px-0">
+          <li class="breadcrumb-item text-secondary"><a href="/" class="text-decoration-none">Home</a></li>
+          <li class="breadcrumb-item active">Generate Meme</li>
+        </ol>
+      </div>
+      <div class="col-12">
+        <a href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"></path>
+            </svg>
+        </a>&nbsp;
+        <h2 class="d-inline-block mb-4">Generate Meme</h2>
+        {% comment %} <p>You can Update a meme and then add the captions.</p> {% endcomment %}
+      </div>
+      <div class="col-12 col-lg-12">
+        <div class="row g-0">
+          <div class="col-12 col-lg-7">
+            <div class="card p-3">
+              <canvas id="canvas"></canvas>
+            </div>
+          </div>
+          <div class="col-12 col-lg-5">
+            <div class="card mb-3">
+              {% if meme_image %}
+                <div class="card-body">
+                  <form method="post" action="{% url 'meme_download' meme_image.id  %}">
+                    {% csrf_token %}
+                    <div class="row mb-2 g-2">
+                      <div class="col-8">
+                        <div id="caption1Box" class="caption-box">
+                          <textarea placeholder="Text #1" class="form-control" name="caption1" style="height: 100px;" id="caption1"></textarea>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <input type="color" class="form-control form-control-color d-inline-block my-1 mx-1" name="caption1_color" id="caption1Color" value="#000000" title="text color">
+                        <input type="color" class="form-control form-control-color d-inline-block my-1 mx-1" name="caption1_bgcolor" id="caption1BgColor" value="#ffffff" title="background color">
+                        <select class="form-select d-inline-block my-1" name="caption1_position" id="caption1Position" aria-label="Default select example">
+                          <option selected value="top">top</option>
+                          <option value="center">center</option>
+                          <option value="bottom">bottom</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row my-2 g-2">
+                      <div class="col-8">
+                        <div id="caption2Box" class="caption-box">
+                          <textarea placeholder="Text #2" class="form-control" name="caption2" style="height: 100px;" id="caption2"></textarea>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <input type="color" class="form-control form-control-color d-inline-block my-1 mx-1" name="caption2_color" id="caption2Color" value="#000000" title="text color">
+                        <input type="color" class="form-control form-control-color d-inline-block my-1 mx-1" name="caption2_bgcolor" id="caption2BgColor" value="#ffffff" title="background color">
+                        <select class="form-select d-inline-block my-1" name="caption2_position" id="caption2Position" aria-label="Default select example">
+                          <option value="top">top</option>
+                          <option selected value="center">center</option>
+                          <option value="bottom">bottom</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row my-2 g-2">
+                      <div class="col-8">
+                        <div id="caption3Box" class="caption-box">
+                          <textarea placeholder="Text #3" class="form-control" name="caption3" style="height: 100px;" id="caption3"></textarea>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <input type="color" class="form-control form-control-color d-inline-block my-1 mx-1" name="caption3_color" id="caption3Color" value="#000000" title="text color">
+                        <input type="color" class="form-control form-control-color d-inline-block my-1 mx-1" name="caption3_bgcolor" id="caption3BgColor" value="#ffffff" title="background color">
+                        <select class="form-select d-inline-block my-1" name="caption3_position" id="caption3Position" aria-label="Default select example">
+                          <option value="top">top</option>
+                          <option value="center">center</option>
+                          <option selected value="bottom">bottom</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <a href="/" class="btn btn-danger">back</a>
+                        <button type="submit" class="btn btn-primary">Generate</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              {% else %}
+                  <div class="card-body">
+                    <div class="row mb-2 g-2">
+                      <div class="col-12">
+                        <h4 class="d-inline-block mb-4">Select Images from below</h4>
+                      </div>
+                      <div class="col-12">
+                        {% if meme_objs %}
+                        <select class="form-select mb-3" id="select_meme" aria-label=".form-select-lg example">
+                          <option disabled selected>Open this select menu</option>
+                          {% for meme in meme_objs %}
+                          <option value="?default={{meme.id}}">{{meme.name|title}}</option>
+                          {% endfor %}
+                        </select>
+                        <a href="/" class="btn btn-danger">back</a>
+                        {% else %}
+                          <a href="/" class="btn btn-danger">back</a>
+                          <a href="{% url 'meme_upload' %}" class="btn btn-primary">Upload Images</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block js %}
+  <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}" ></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var selectElement = document.getElementById('select_meme');
+      if (selectElement){
+
+        selectElement.addEventListener('change', function() {
+          var selectedOption = selectElement.options[selectElement.selectedIndex];
+          var selectedUrl = selectedOption.value;
+          window.location.href = selectedUrl;
+        });
+      }else{
+        console.log('error managed');
+      }
+    });
+  </script>
+
+  <script>
+  // Get the canvas element
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+
+  // Set canvas dimensions
+  canvas.width = 500;
+  canvas.height = 300;
+
+  // Set initial text positions
+  var textX = 10;
+  var textY = 50;
+
+  // Set initial text colors
+  var caption1Color = '#000000';
+  var caption2Color = '#000000';
+  var caption3Color = '#000000';
+
+  // Set initial background colors
+  var caption1BgColor = 'transparent';
+  var caption2BgColor = 'transparent';
+  var caption3BgColor = 'transparent';
+
+  // Set initial caption positions
+  var caption1Position = 'top';
+  var caption2Position = 'center';
+  var caption3Position = 'bottom';
+
+  // Create an Image object for the meme image
+  var memeImage = new Image();
+
+  // Set the source of the meme image
+  memeImage.src = '{% if meme_image %}{{ meme_image.image.url }}{% else %}{% static "assets/img/check-below.png" %}{% endif %}';
+
+  // When the image is loaded, draw it on the canvas
+  memeImage.onload = function() {
+    // Update the canvas with the image and text
+    updateCanvas();
+  };
+
+  // Function to update the canvas
+  function updateCanvas() {
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the meme image on the canvas
+    ctx.drawImage(memeImage, 0, 0, canvas.width, canvas.height);
+
+    // Set text style for caption 1
+    ctx.font = '20px Arial';
+    ctx.fillStyle = caption1Color;
+
+    // Set background style for caption 1
+    if (caption1BgColor !== 'transparent') {
+      ctx.fillRect(textX - 5, getCaptionY(caption1Position) - 25, ctx.measureText(caption1.value).width + 10, 30);
+      ctx.fillStyle = caption1BgColor;
+      ctx.fillRect(textX - 5, getCaptionY(caption1Position) - 25, ctx.measureText(caption1.value).width + 10, 30);
+    }
+
+    // Draw caption 1
+    ctx.fillStyle = caption1Color;
+    ctx.fillText(caption1.value, textX, getCaptionY(caption1Position));
+
+    // Set text style for caption 2
+    ctx.fillStyle = caption2Color;
+
+    // Set background style for caption 2
+    if (caption2BgColor !== 'transparent') {
+      ctx.fillRect(textX - 5, getCaptionY(caption2Position) - 25, ctx.measureText(caption2.value).width + 10, 30);
+      ctx.fillStyle = caption2BgColor;
+      ctx.fillRect(textX - 5, getCaptionY(caption2Position) - 25, ctx.measureText(caption2.value).width + 10, 30);
+    }
+
+    // Draw caption 2
+    ctx.fillStyle = caption2Color;
+    ctx.fillText(caption2.value, textX, getCaptionY(caption2Position));
+
+    // Set text style for caption 3
+    ctx.fillStyle = caption3Color;
+
+    // Set background style for caption 3
+    if (caption3BgColor !== 'transparent') {
+      ctx.fillRect(textX - 5, getCaptionY(caption3Position) - 25, ctx.measureText(caption3.value).width + 10, 30);
+      ctx.fillStyle = caption3BgColor;
+      ctx.fillRect(textX - 5, getCaptionY(caption3Position) - 25, ctx.measureText(caption3.value).width + 10, 30);
+    }
+
+    // Draw caption 3
+    ctx.fillStyle = caption3Color;
+    ctx.fillText(caption3.value, textX, getCaptionY(caption3Position));
+  }
+
+  // Function to calculate the Y position of a caption based on its position
+  function getCaptionY(position) {
+    if (position === 'top') {
+      return textY;
+    } else if (position === 'center') {
+      return canvas.height / 2;
+    } else if (position === 'bottom') {
+      return canvas.height - 50;
+    }
+  }
+
+  // Function to update text color for caption 1
+  function updateCaption1Color() {
+    caption1Color = document.getElementById('caption1Color').value;
+    updateCanvas();
+  }
+
+  // Function to update background color for caption 1
+  function updateCaption1BgColor() {
+    caption1BgColor = document.getElementById('caption1BgColor').value;
+    updateCanvas();
+  }
+
+  // Function to update text color for caption 2
+  function updateCaption2Color() {
+    caption2Color = document.getElementById('caption2Color').value;
+    updateCanvas();
+  }
+
+  // Function to update background color for caption 2
+  function updateCaption2BgColor() {
+    caption2BgColor = document.getElementById('caption2BgColor').value;
+    updateCanvas();
+  }
+
+  // Function to update text color for caption 3
+  function updateCaption3Color() {
+    caption3Color = document.getElementById('caption3Color').value;
+    updateCanvas();
+  }
+
+  // Function to update background color for caption 3
+  function updateCaption3BgColor() {
+    caption3BgColor = document.getElementById('caption3BgColor').value;
+    updateCanvas();
+  }
+
+  // Function to update caption positions
+  function updateCaptionPositions() {
+    caption1Position = document.getElementById('caption1Position').value;
+    caption2Position = document.getElementById('caption2Position').value;
+    caption3Position = document.getElementById('caption3Position').value;
+    updateCanvas();
+  }
+
+  // Variables for dragging captions
+  var draggingCaption = null;
+  var dragOffsetX = 0;
+  var dragOffsetY = 0;
+
+  // Function to handle caption drag start
+  function handleCaptionDragStart(event) {
+    draggingCaption = event.target;
+    dragOffsetX = event.clientX - draggingCaption.getBoundingClientRect().left;
+    dragOffsetY = event.clientY - draggingCaption.getBoundingClientRect().top;
+  }
+
+  // Function to handle caption drag end
+  function handleCaptionDragEnd(event) {
+    draggingCaption = null;
+  }
+
+  // Function to handle canvas drag over
+  function handleCanvasDragOver(event) {
+    event.preventDefault();
+  }
+
+  // Function to handle caption drop on canvas
+  function handleCanvasDrop(event) {
+    event.preventDefault();
+
+    // Calculate the drop position relative to the canvas
+    var offsetX = event.clientX - canvas.getBoundingClientRect().left;
+    var offsetY = event.clientY - canvas.getBoundingClientRect().top;
+
+    // Update the caption position based on the drop position
+    if (draggingCaption) {
+      if (draggingCaption.id === 'caption1Box') {
+        caption1Position = 'custom';
+        textX = offsetX - dragOffsetX;
+        textY = offsetY - dragOffsetY;
+        updateCanvas();
+      } else if (draggingCaption.id === 'caption2Box') {
+        caption2Position = 'custom';
+        textX = offsetX - dragOffsetX;
+        textY = offsetY - dragOffsetY;
+        updateCanvas();
+      } else if (draggingCaption.id === 'caption3Box') {
+        caption3Position = 'custom';
+        textX = offsetX - dragOffsetX;
+        textY = offsetY - dragOffsetY;
+        updateCanvas();
+      }
+    }
+  }
+
+  // Add event listeners to input fields
+  var caption1 = document.getElementById('caption1');
+  var caption2 = document.getElementById('caption2');
+  var caption3 = document.getElementById('caption3');
+
+  caption1.addEventListener('input', function () {
+    // Update the canvas when caption 1 changes
+    updateCanvas();
+  });
+
+  caption2.addEventListener('input', function () {
+    // Update the canvas when caption 2 changes
+    updateCanvas();
+  });
+
+  caption3.addEventListener('input', function () {
+    // Update the canvas when caption 3 changes
+    updateCanvas();
+  });
+
+  // Add event listeners to color inputs
+  var caption1ColorInput = document.getElementById('caption1Color');
+  var caption1BgColorInput = document.getElementById('caption1BgColor');
+  var caption2ColorInput = document.getElementById('caption2Color');
+  var caption2BgColorInput = document.getElementById('caption2BgColor');
+  var caption3ColorInput = document.getElementById('caption3Color');
+  var caption3BgColorInput = document.getElementById('caption3BgColor');
+
+  caption1ColorInput.addEventListener('change', function () {
+    // Update the text color for caption 1
+    updateCaption1Color();
+  });
+
+  caption1BgColorInput.addEventListener('change', function () {
+    // Update the background color for caption 1
+    updateCaption1BgColor();
+  });
+
+  caption2ColorInput.addEventListener('change', function () {
+    // Update the text color for caption 2
+    updateCaption2Color();
+  });
+
+  caption2BgColorInput.addEventListener('change', function () {
+    // Update the background color for caption 2
+    updateCaption2BgColor();
+  });
+
+  caption3ColorInput.addEventListener('change', function () {
+    // Update the text color for caption 3
+    updateCaption3Color();
+  });
+
+  caption3BgColorInput.addEventListener('change', function () {
+    // Update the background color for caption 3
+    updateCaption3BgColor();
+  });
+
+  // Add event listener to caption position inputs
+  var caption1PositionInput = document.getElementById('caption1Position');
+  var caption2PositionInput = document.getElementById('caption2Position');
+  var caption3PositionInput = document.getElementById('caption3Position');
+
+  caption1PositionInput.addEventListener('change', function () {
+    // Update the caption positions
+    updateCaptionPositions();
+  });
+
+  caption2PositionInput.addEventListener('change', function () {
+    // Update the caption positions
+    updateCaptionPositions();
+  });
+
+  caption3PositionInput.addEventListener('change', function () {
+    // Update the caption positions
+    updateCaptionPositions();
+  });
+
+  // Add event listeners for caption dragging
+  var caption1Box = document.getElementById('caption1Box');
+  var caption2Box = document.getElementById('caption2Box');
+  var caption3Box = document.getElementById('caption3Box');
+
+  caption1Box.addEventListener('mousedown', handleCaptionDragStart);
+  caption2Box.addEventListener('mousedown', handleCaptionDragStart);
+  caption3Box.addEventListener('mousedown', handleCaptionDragStart);
+
+  document.addEventListener('mouseup', handleCaptionDragEnd);
+
+  canvas.addEventListener('dragover', handleCanvasDragOver);
+  canvas.addEventListener('drop', handleCanvasDrop);
+  </script>
+{% endblock js %}

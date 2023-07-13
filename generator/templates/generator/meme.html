@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="container my-5">
+    <div class="row">
+      <div class="col-12">
+        <h2>Generated Meme</h2>
+        {% if meme_image_base64 %}
+          <img src="data:image/{{ meme_image_format }};base64,{{ meme_image_base64 }}" alt="Meme Image">
+        {% else %}
+          <!-- Display a default image if meme_image_base64 is not available -->
+          <img src="{% static 'path_to_default_image.png' %}" alt="Default Image">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
