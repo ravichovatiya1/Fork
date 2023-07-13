@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link href="{% static 'assets/css/custom.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+{% include 'message.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-lg-12">
+        <ol class="breadcrumb bg-transparent float-end pt-3 mb-0 px-0">
+          <li class="breadcrumb-item active">Home</li>
+        </ol>
+      </div>
+      <div class="col-12">
+        <h2 class="d-inline-block mb-4">Meme Library</h2>
+        <span>({{ count }} results)</span>
+        <!-- <p>All things wonderful and wearable for men, women, kids, and even little bitty babies</p> -->
+      </div>
+      <div class="col-12">
+        <div class="row">
+          {% if meme_images %}
+            {% for meme_image in meme_images %}
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="meme-card">
+                <img src="{{ meme_image.image.url }}" alt="Meme Image">
+                <div class="meme-card-overlay">
+                  <a class="btn btn-primary" href="{% url 'meme_generate' %}?default={{meme_image.id}}">Generate</a>&nbsp;
+                  <a class="btn btn-secondary" href="{% url 'meme_update' meme_image.id %}">Edit</a>&nbsp;
+                  <a class="btn btn-danger" href="{% url 'meme_delete' meme_image.id %}">Delete</a>
+                </div>
+                <div class="img-caption mt-2">{{ meme_image.name }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="col-12 col-md-6 col-lg-4">
+              <p>No meme images available.</p>
+              <a href="{% url 'meme_upload' %}" class="btn btn-primary">Upload Images</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
