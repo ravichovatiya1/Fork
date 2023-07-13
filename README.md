@@ -68,21 +68,6 @@ python manage.py migrate
 
 ```
 
-
-6. Make Migrations and migrate:
-
-- Use below command to create the migrations file
-
-```bash
-python manage.py makemigrations
-```
-
-- Use Below command to reflect the changes to database of migrations.
-```bash
-python manage.py migrate
-
-```
-
 6. Runserver:
 
 ```bash
